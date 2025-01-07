@@ -1,0 +1,76 @@
+---
+import Layout from "../layouts/Layout.astro"
+---
+
+<Layout title="Settings">
+  <section id="placeholder" class="pe-none">
+    <h1>Settings</h1>
+    <p class="d-block placeholder"></p>
+    <p class="d-block placeholder"></p>
+    <p class="d-block placeholder"></p>
+    <button class="btn btn-primary placeholder">Admin panel</button>
+    <button class="btn btn-primary placeholder">Logout</button>
+  </section>
+  <section id="info" class="d-none">
+    <h1>Settings</h1>
+    <p>
+      You are currently logged in the system. If there's an issue, try logging
+      out then logging in back.
+    </p>
+    <a href="/admin" class="btn btn-primary"
+      ><svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="lucide lucide-gavel"
+        ><path d="m14.5 12.5-8 8a2.119 2.119 0 1 1-3-3l8-8"></path><path
+          d="m16 16 6-6"></path><path d="m8 8 6-6"></path><path d="m9 7 8 8"
+        ></path><path d="m21 11-8-8"></path></svg
+      > Admin panel</a
+    >
+    <button class="btn btn-primary" id="logoutButton"
+      ><svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="lucide lucide-log-out"
+        ><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline
+          points="16 17 21 12 16 7"></polyline><line
+          x1="21"
+          x2="9"
+          y1="12"
+          y2="12"></line></svg
+      > Logout</button
+    >
+  </section>
+  <script>
+    // @ts-ignore
+    if (!Cookies.get("access_token")) {
+      alert("You are not authorized.")
+      window.location.href = "/auth"
+    }
+
+    document.getElementById("placeholder")?.classList.add("d-none")
+    document.getElementById("info")?.classList.remove("d-none")
+
+    document.getElementById("logoutButton")?.addEventListener("click", () => {
+      if (confirm("Are you sure you want to log out?")) {
+        // @ts-ignore
+        Cookies.remove("access_token")
+        window.location.href = "/auth"
+      }
+    })
+  </script>
+</Layout>

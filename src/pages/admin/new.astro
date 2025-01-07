@@ -1,0 +1,119 @@
+---
+import Layout from "../../layouts/Layout.astro"
+---
+
+<Layout title="Add new site">
+  <h1>Add new site</h1>
+  <div>
+    <div class="mb-3">
+      <label for="domainFormControl" class="form-label">Domain</label>
+      <input
+        type="text"
+        name="domain"
+        class="form-control"
+        id="domainFormControl"
+      />
+    </div>
+    <div class="mb-3">
+      <label for="reasonFormControl" class="form-label">Reason</label>
+      <input
+        type="text"
+        name="reason"
+        class="form-control"
+        id="reasonFormControl"
+      />
+    </div>
+    <div class="mb-3">
+      <label for="notesFormControl" class="form-label">Notes</label>
+      <input
+        type="text"
+        name="notes"
+        class="form-control"
+        id="notesFormControl"
+      />
+    </div>
+    <div class="mb-3">
+      <label for="pathFormControl" class="form-label">Path</label>
+      <input
+        type="text"
+        name="path"
+        class="form-control"
+        id="pathFormControl"
+      />
+    </div>
+    <button type="submit" class="btn btn-primary" id="submitFormControl"
+      ><svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="lucide lucide-plus"
+        ><path d="M5 12h14"></path><path d="M12 5v14"></path></svg
+      > Create</button
+    >
+  </div>
+</Layout>
+
+<script>
+  import { API_URL } from "astro:env/client"
+
+  const submitButton = document.getElementById("submitFormControl")
+  const domain = document.getElementById(
+    "domainFormControl",
+  ) as HTMLInputElement
+  const notes = document.getElementById("notesFormControl") as HTMLInputElement
+  const path = document.getElementById("pathFormControl") as HTMLInputElement
+  const reason = document.getElementById(
+    "reasonFormControl",
+  ) as HTMLInputElement
+
+  // @ts-ignore
+  const access_token = Cookies.get("access_token")
+
+  submitButton?.addEventListener("click", async () => {
+    if (domain?.value == "" || reason?.value == "") {
+      alert("Fill out the domain and reason fields!")
+      return
+    }
+
+    // Let's check if domain is already exists so we don't break everything
+    const check_duplicate_response = await fetch(
+      `${API_URL}/sites/${domain.value}`,
+    )
+    const check_duplicate_data = await check_duplicate_response.json()
+
+    if (check_duplicate_data.length) {
+      alert("Woah! You are tried to add already existing entry.")
+      return
+    }
+
+    const response = await fetch(`${API_URL}/sites`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify({
+        domain: domain.value.trim(),
+        notes: notes.value ? notes.value : "/",
+        path: path.value ? path.value : "/",
+        reason: reason.value.trim(),
+      }),
+    })
+
+    if (!response.ok) {
+      alert(
+        "Oops! Check if you are logged in, only admins can add/edit/delete sites.",
+      )
+    } else {
+      alert(
+        `Success! Added ${domain.value} to blacklist for "${reason.value}".`,
+      )
+    }
+  })
+</script>

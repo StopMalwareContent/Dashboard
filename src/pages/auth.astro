@@ -1,0 +1,64 @@
+---
+import Layout from "../layouts/Layout.astro"
+---
+
+<Layout title="Auth">
+  <h1>Login</h1>
+  <div>
+    <div class="mb-3">
+      <label for="usernameFormControl" class="form-label">Username</label>
+      <input
+        type="text"
+        name="username"
+        class="form-control"
+        id="usernameFormControl"
+      />
+    </div>
+    <div class="mb-3">
+      <label for="passwordFormControl" class="form-label">Password</label>
+      <input
+        type="password"
+        name="password"
+        class="form-control"
+        id="passwordFormControl"
+      />
+    </div>
+    <button type="submit" class="btn btn-primary" id="submitFormControl"
+      >Submit</button
+    >
+  </div>
+
+  <script>
+    import { API_URL } from "astro:env/client"
+
+    const submitButton = document.getElementById("submitFormControl")
+    const username = document.getElementById(
+      "usernameFormControl",
+    ) as HTMLInputElement
+    const password = document.getElementById(
+      "passwordFormControl",
+    ) as HTMLInputElement
+
+    submitButton?.addEventListener("click", async () => {
+      if (username?.value == "" || password?.value == "") {
+        alert("Fill out the form!")
+        return
+      }
+
+      const response = await fetch(
+        `${API_URL}/login?username=${username?.value}&password=${password?.value}`,
+      )
+      const data = await response.json()
+
+      if (data.access_token) {
+        // @ts-ignore
+        Cookies.set("access_token", data.access_token, { expires: 1 })
+
+        alert("Login successfully!")
+        window.location.href = "/settings"
+      } else {
+        alert("Invalid credentials!")
+      }
+    })
+  </script>
+</Layout>
