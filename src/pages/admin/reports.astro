@@ -87,7 +87,6 @@ const data = await response.json()
 
     // @ts-ignore
     if (e.target.id == "approveBtn") {
-      confirm("Are you sure want to approve " + targetDomain + "?")
       // Let's check if domain is already exists so we don't break everything
       const check_duplicate_response = await fetch(
         `${API_URL}/sites/${targetDomain}`,
@@ -129,8 +128,6 @@ const data = await response.json()
       }
       // @ts-ignore
     } else if (e.target.id == "removeBtn") {
-      confirm("Are you sure want to remove " + targetDomain + "?")
-
       const response = await fetch(`${API_URL}/reports/${targetDomain}`, {
         method: "DELETE",
         headers: {
