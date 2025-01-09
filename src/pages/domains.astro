@@ -15,40 +15,42 @@ const data = await response.json()
     type="text"
     placeholder="Search domain..."
   />
-  <table class="table table-hover mt-2">
-    <thead>
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">Domain</th>
-        <th scope="col">Reason</th>
-        <th scope="col">Path</th>
-        <th scope="col">Notes</th>
-      </tr>
-    </thead>
-    <tbody>
-      {
-        data.map(
-          (
-            item: {
-              domain: string
-              reason: string
-              notes: string
-              path: string
-            },
-            i: number,
-          ) => (
-            <tr>
-              <td>{i + 1}</td>
-              <td>{item.domain}</td>
-              <td>{item.reason}</td>
-              <td>{item.path}</td>
-              <td>{item.notes}</td>
-            </tr>
-          ),
-        )
-      }
-    </tbody>
-  </table>
+  <div class="table-responsive">
+    <table class="table table-hover mt-2">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Domain</th>
+          <th scope="col">Reason</th>
+          <th scope="col">Path</th>
+          <th scope="col">Notes</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          data.map(
+            (
+              item: {
+                domain: string
+                reason: string
+                notes: string
+                path: string
+              },
+              i: number,
+            ) => (
+              <tr>
+                <td>{i + 1}</td>
+                <td>{item.domain}</td>
+                <td>{item.reason}</td>
+                <td>{item.path}</td>
+                <td>{item.notes}</td>
+              </tr>
+            ),
+          )
+        }
+      </tbody>
+    </table>
+  </div>
   <script lang="js">
     const searchInput = document.getElementById("search-input")
     const tableRows = document.querySelectorAll("tbody tr")

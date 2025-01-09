@@ -9,49 +9,51 @@ const data = await response.json()
 
 <Layout title="Reports">
   <h1>Reports</h1>
-  <table class="table table-hover mt-2">
-    <thead>
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">Domain</th>
-        <th scope="col">Reason</th>
-        <th scope="col">Path</th>
-        <th scope="col">Notes</th>
-        <th scope="col">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      {
-        data.map(
-          (
-            item: {
-              domain: string
-              reason: string
-              notes: string
-              path: string
-            },
-            i: number,
-          ) => (
-            <tr>
-              <td>{i + 1}</td>
-              <td>{item.domain}</td>
-              <td>{item.reason}</td>
-              <td>{item.path}</td>
-              <td>{item.notes}</td>
-              <td>
-                <button class="btn btn-success btn" id="approveBtn">
-                  Approve
-                </button>
-                <button class="btn btn-danger btn" id="removeBtn">
-                  Remove
-                </button>
-              </td>
-            </tr>
-          ),
-        )
-      }
-    </tbody>
-  </table>
+  <div class="table-responsive">
+    <table class="table table-hover mt-2">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Domain</th>
+          <th scope="col">Reason</th>
+          <th scope="col">Path</th>
+          <th scope="col">Notes</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          data.map(
+            (
+              item: {
+                domain: string
+                reason: string
+                notes: string
+                path: string
+              },
+              i: number,
+            ) => (
+              <tr>
+                <td>{i + 1}</td>
+                <td>{item.domain}</td>
+                <td>{item.reason}</td>
+                <td>{item.path}</td>
+                <td>{item.notes}</td>
+                <td>
+                  <button class="btn btn-success btn" id="approveBtn">
+                    Approve
+                  </button>
+                  <button class="btn btn-danger btn" id="removeBtn">
+                    Remove
+                  </button>
+                </td>
+              </tr>
+            ),
+          )
+        }
+      </tbody>
+    </table>
+  </div>
 </Layout>
 
 <script>

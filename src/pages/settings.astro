@@ -3,15 +3,7 @@ import Layout from "../layouts/Layout.astro"
 ---
 
 <Layout title="Settings">
-  <section id="placeholder" class="pe-none">
-    <h1>Settings</h1>
-    <p class="d-block placeholder"></p>
-    <p class="d-block placeholder"></p>
-    <p class="d-block placeholder"></p>
-    <button class="btn btn-primary placeholder">Admin panel</button>
-    <button class="btn btn-primary placeholder">Logout</button>
-  </section>
-  <section id="info" class="d-none">
+  <section class="d-none">
     <h1>Settings</h1>
     <p>
       You are currently logged in the system. If there's an issue, try logging
@@ -56,23 +48,20 @@ import Layout from "../layouts/Layout.astro"
     >
   </section>
   <script>
-    // Redirect to login page if user is not logged in
     // @ts-ignore
     if (!Cookies.get("access_token")) {
       alert("Not authorized.")
       window.location.href = "/auth"
+    } else {
+      document.querySelector("section")?.classList.remove("d-none")
+
+      document.getElementById("logoutButton")?.addEventListener("click", () => {
+        if (confirm("Are you sure you want to log out?")) {
+          // @ts-ignore
+          Cookies.remove("access_token")
+          window.location.href = "/auth"
+        }
+      })
     }
-    // End
-
-    document.getElementById("placeholder")?.classList.add("d-none")
-    document.getElementById("info")?.classList.remove("d-none")
-
-    document.getElementById("logoutButton")?.addEventListener("click", () => {
-      if (confirm("Are you sure you want to log out?")) {
-        // @ts-ignore
-        Cookies.remove("access_token")
-        window.location.href = "/auth"
-      }
-    })
   </script>
 </Layout>
