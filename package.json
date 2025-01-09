@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.1.0",
-    "astro": "^5.0.2"
+    "astro": "^5.1.4"
   },
   "devDependencies": {
     "prettier": "^3.4.2",
