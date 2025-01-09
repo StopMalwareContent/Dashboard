@@ -1,0 +1,157 @@
+---
+import Layout from "../../layouts/Layout.astro"
+
+import { API_URL } from "astro:env/client"
+
+const response = await fetch(`${API_URL}/reports`)
+const data = await response.json()
+---
+
+<Layout title="Reports">
+  <h1>Reports</h1>
+  <table class="table table-hover mt-2">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Domain</th>
+        <th scope="col">Reason</th>
+        <th scope="col">Path</th>
+        <th scope="col">Notes</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        data.map(
+          (
+            item: {
+              domain: string
+              reason: string
+              notes: string
+              path: string
+            },
+            i: number,
+          ) => (
+            <tr>
+              <td>{i + 1}</td>
+              <td>{item.domain}</td>
+              <td>{item.reason}</td>
+              <td>{item.path}</td>
+              <td>{item.notes}</td>
+              <td>
+                <button class="btn btn-success btn" id="approveBtn">
+                  Approve
+                </button>
+                <button class="btn btn-danger btn" id="removeBtn">
+                  Remove
+                </button>
+              </td>
+            </tr>
+          ),
+        )
+      }
+    </tbody>
+  </table>
+</Layout>
+
+<script>
+  // Redirect to login page if user is not logged in
+  // @ts-ignore
+  if (!Cookies.get("access_token")) {
+    alert("Not authorized.")
+    window.location.href = "/auth"
+  }
+  // End
+
+  import { API_URL } from "astro:env/client"
+
+  // @ts-ignore
+  const access_token = Cookies.get("access_token")
+
+  const wrapper = document.querySelector(".table")
+
+  wrapper?.addEventListener("click", async (e) => {
+    // @ts-ignore
+    const isButton = e.target.nodeName === "BUTTON"
+
+    if (!isButton) {
+      return
+    }
+
+    // @ts-ignore
+    const targetRow = e.target.parentNode.parentNode
+    const targetDomain = targetRow.querySelectorAll("td")[1].innerText
+    const targetReason = targetRow.querySelectorAll("td")[2].innerText
+    const targetPath = targetRow.querySelectorAll("td")[3].innerText
+    const targetNotes = targetRow.querySelectorAll("td")[4].innerText
+
+    // @ts-ignore
+    if (e.target.id == "approveBtn") {
+      confirm("Are you sure want to approve " + targetDomain + "?")
+      // Let's check if domain is already exists so we don't break everything
+      const check_duplicate_response = await fetch(
+        `${API_URL}/sites/${targetDomain}`,
+      )
+      const check_duplicate_data = await check_duplicate_response.json()
+
+      if (check_duplicate_data.length) {
+        // @ts-ignore
+        appendAlert("You are tried to add already existing entry.", "warning")
+        return
+      }
+
+      const response = await fetch(`${API_URL}/sites`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          domain: targetDomain.trim(),
+          notes: targetNotes ? targetNotes : "/",
+          path: targetPath ? targetPath : "/",
+          reason: targetReason.trim(),
+        }),
+      })
+
+      if (!response.ok) {
+        // @ts-ignore
+        appendAlert(
+          "Oops! Check if you are logged in, only admins can add/edit/delete sites.",
+          "danger",
+        )
+      } else {
+        // @ts-ignore
+        appendAlert(
+          `Success! Added <i>${targetDomain}</i> to blacklist for ${targetReason}.`,
+          "success",
+        )
+      }
+      // @ts-ignore
+    } else if (e.target.id == "removeBtn") {
+      confirm("Are you sure want to remove " + targetDomain + "?")
+
+      const response = await fetch(`${API_URL}/reports/${targetDomain}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          "Content-type": "application/json",
+        },
+      })
+
+      if (!response.ok) {
+        // @ts-ignore
+        appendAlert(
+          "Oops! Check if you are logged in, only admins can add/edit/delete sites.",
+          "danger",
+        )
+      } else {
+        // @ts-ignore
+        appendAlert(
+          `Success! Deleted <i>${targetDomain}</i>'s entry. Refresh page to see changes.`,
+          "success",
+        )
+      }
+    }
+  })
+</script>

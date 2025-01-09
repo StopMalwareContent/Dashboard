@@ -25,9 +25,26 @@ import Layout from "../layouts/Layout.astro"
 
   <h1>Statistics</h1>
   <p>Total blacklisted sites count: <b id="sitesCount">0</b></p>
+  <p>Total reported sites count: <b id="reportsCount">0</b></p>
   <div>
     <h2>Administrator actions</h2>
     <p>Grab the banhammer and ban bad sites!</p>
+    <a href="/admin/reports" class="btn btn-primary"
+      ><svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="lucide lucide-flag"
+        ><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"
+        ></path><line x1="4" x2="4" y1="22" y2="15"></line></svg
+      > View all reports</a
+    >
     <a href="/admin/new" class="btn btn-primary"
       ><svg
         xmlns="http://www.w3.org/2000/svg"
@@ -99,4 +116,5 @@ import Layout from "../layouts/Layout.astro"
   const data = await response.json()
 
   document.getElementById("sitesCount")!.innerText = data.sites
+  document.getElementById("reportsCount")!.innerText = data.reports
 </script>

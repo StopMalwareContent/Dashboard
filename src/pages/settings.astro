@@ -56,11 +56,13 @@ import Layout from "../layouts/Layout.astro"
     >
   </section>
   <script>
+    // Redirect to login page if user is not logged in
     // @ts-ignore
     if (!Cookies.get("access_token")) {
-      alert("You are not authorized.")
+      alert("Not authorized.")
       window.location.href = "/auth"
     }
+    // End
 
     document.getElementById("placeholder")?.classList.add("d-none")
     document.getElementById("info")?.classList.remove("d-none")

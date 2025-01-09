@@ -28,6 +28,14 @@ const currentPath = pathname.slice(1) // remove the first "/"
       integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
       crossorigin="anonymous"
     />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"
+      integrity="sha256-WCzAhd2P6gRJF9Hv3oOOd+hFJi/QJbv+Azn4CGB8gfY="
+      crossorigin="anonymous"></script>
   </head>
   <body class="d-flex flex-column vh-100">
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
@@ -84,6 +92,7 @@ const currentPath = pathname.slice(1) // remove the first "/"
       </div>
     </nav>
     <main class="container flex-grow-1 flex-shrink-1 flex-basis-auto pt-2">
+      <div id="alertPlaceholder"></div>
       <slot />
     </main>
     <footer class="container text-center">
@@ -97,13 +106,19 @@ const currentPath = pathname.slice(1) // remove the first "/"
       </p>
       <p>Made with Astro & Bootstrap</p>
     </footer>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-      crossorigin="anonymous"></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"
-      integrity="sha256-WCzAhd2P6gRJF9Hv3oOOd+hFJi/QJbv+Azn4CGB8gfY="
-      crossorigin="anonymous"></script>
+    <script defer>
+      const alertPlaceholder = document.getElementById("alertPlaceholder")
+      const appendAlert = (message, type) => {
+        const wrapper = document.createElement("div")
+        wrapper.innerHTML = [
+          `<div class="alert alert-${type} alert-dismissible" role="alert">`,
+          `   <div>${message}</div>`,
+          '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+          "</div>",
+        ].join("")
+
+        alertPlaceholder.append(wrapper)
+      }
+    </script>
   </body>
 </html>

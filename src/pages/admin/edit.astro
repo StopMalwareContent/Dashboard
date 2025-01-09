@@ -62,6 +62,14 @@ import Layout from "../../layouts/Layout.astro"
 </Layout>
 
 <script>
+  // Redirect to login page if user is not logged in
+  // @ts-ignore
+  if (!Cookies.get("access_token")) {
+    alert("Not authorized.")
+    window.location.href = "/auth"
+  }
+  // End
+
   import { API_URL } from "astro:env/client"
 
   const submitButton = document.getElementById("submitFormControl")
@@ -79,7 +87,8 @@ import Layout from "../../layouts/Layout.astro"
 
   submitButton?.addEventListener("click", async () => {
     if (domain?.value == "" || reason?.value == "") {
-      alert("Fill out all fields!")
+      // @ts-ignore
+      appendAlert("Fill out the domain and reason fields.", "danger")
       return
     }
 
@@ -98,11 +107,14 @@ import Layout from "../../layouts/Layout.astro"
     })
 
     if (!response.ok) {
-      alert(
+      // @ts-ignore
+      appendAlert(
         "Oops! Check if you are logged in, only admins can add/edit/delete sites.",
+        "danger",
       )
     } else {
-      alert(`Success! Modified ${domain.value}'s' entry.`)
+      // @ts-ignore
+      appendAlert(`Success! Modified ${domain.value}'s entry.`, "success")
     }
   })
 </script>

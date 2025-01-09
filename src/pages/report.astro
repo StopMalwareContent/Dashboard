@@ -4,5 +4,113 @@ import Layout from "../layouts/Layout.astro"
 
 <Layout title="Report">
   <h1>Report</h1>
-  <p>Reporting feature is still work in progress</p>
+  <div>
+    <div class="mb-3">
+      <label for="urlFormControl" class="form-label">URL</label>
+      <input type="text" name="url" class="form-control" id="urlFormControl" />
+    </div>
+    <div class="mb-3">
+      <label for="reasonFormControl">Reason</label>
+      <select
+        class="form-select"
+        name="reasonFormControl"
+        id="reasonFormControl"
+      >
+        <option value="illegal-redistribution" selected
+          >Illegal redistribution</option
+        >
+        <option value="phishing">Phishing website</option>
+        <option value="malware">Contains malware</option>
+        <option value="puw">Potentially unwanted website</option>
+        <option value="false-pos"
+          >False positive (Add more info in notes)</option
+        >
+      </select>
+    </div>
+    <div class="mb-3">
+      <label for="notesFormControl" class="form-label">Notes (optional)</label>
+      <input
+        type="text"
+        name="notes"
+        class="form-control"
+        id="notesFormControl"
+      />
+    </div>
+    <div class="mb-3">
+      <div class="cf-turnstile" data-sitekey="0x4AAAAAAA43e9esbU117A6X"></div>
+    </div>
+  </div>
+  <button type="submit" class="btn btn-primary" id="submitFormControl"
+    ><svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="lucide lucide-flag"
+      ><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"
+      ></path><line x1="4" x2="4" y1="22" y2="15"></line></svg
+    > Submit report</button
+  >
 </Layout>
+
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer
+></script>
+
+<script>
+  import { API_URL } from "astro:env/client"
+
+  const submitButton = document.getElementById("submitFormControl")
+  const url = document.getElementById("urlFormControl") as HTMLInputElement
+  const reason = document.getElementById(
+    "reasonFormControl",
+  ) as HTMLInputElement
+  const notes = document.getElementById("notesFormControl") as HTMLInputElement
+
+  submitButton?.addEventListener("click", async () => {
+    if (url?.value == "" || reason?.value == "") {
+      // @ts-ignore
+      appendAlert("Fill out the URL and reason fields!", "danger")
+      return
+    }
+
+    if (URL.canParse(url.value)) {
+      const parsedUrl = new URL(url.value)
+      const domain = parsedUrl.hostname.replace(/^www\./, "")
+      const path = parsedUrl.pathname
+
+      const response = await fetch(`${API_URL}/reports`, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          domain: domain,
+          notes: notes.value ? notes.value : "/",
+          path: path ? path : "/",
+          reason: reason.value,
+          // @ts-ignore
+          token: turnstile.getResponse(),
+        }),
+      })
+
+      if (response.ok) {
+        // @ts-ignore
+        appendAlert("Website has been successfully reported.", "success")
+      } else if (response.status == 409) {
+        // @ts-ignore
+        appendAlert("This website is already reported.", "warning")
+      } else {
+        // @ts-ignore
+        appendAlert("Captcha failed.", "danger")
+      }
+    } else {
+      // @ts-ignore
+      appendAlert("Invalid URL.", "danger")
+    }
+  })
+</script>
